@@ -18,7 +18,7 @@ export default function RegistracijaStranica({ authApi }: RegistracijaPageProps)
   }, [isAuthenticated, navigate, user]);
 
   return (
-    <main className="min-h-screen bg-gradient-to-tr from-slate-600/75 to-green-800/50 flex items-center justify-center">
+    <main className="min-h-screen bg-gradient-to-tr from-emerald-200 via-emerald-500 to-emerald-900 flex items-center justify-center">
       <RegistracijaForma authApi={authApi} />
     </main>
   );

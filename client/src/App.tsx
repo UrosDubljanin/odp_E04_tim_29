@@ -7,10 +7,11 @@ import { authApi } from "./api_services/auth/AuthAPIService";
 import { ProtectedRoute } from "./components/protected_route/ProtectedRoute";
 import PrijavaStranica from "./pages/auth/PrijavaStranica";
 import RegistracijaStranica from "./pages/auth/RegistracijaStranica";
-import KontrolnaTablaUserStranica from "./pages/kontrolna_tabla/KontrolnaTablaUserStranica";
 import KontrolnaTablaAdminStranica from "./pages/kontrolna_tabla/KontrolnaTablaAdminStranica";
 import NotFoundStranica from "./pages/not_found/NotFoundPage";
 import { usersApi } from "./api_services/users/UsersAPIService";
+import { kvarAPI } from "./api_services/kvarovi/KvarAPIService";
+import KontrolnaTablaStanaraStranica from "./pages/kontrolna_tabla/KontrolnaTablaStanaraStranica";
 
 function App() {
   return (
@@ -19,19 +20,15 @@ function App() {
       <Route path="/register" element={<RegistracijaStranica authApi={authApi} />} />
       <Route path="/404" element={<NotFoundStranica />} />
 
-        <Route
-          path="/user-dashboard"
-          element={
-            <ProtectedRoute requiredRole="user">
-              <KontrolnaTablaUserStranica />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/user-dashboard" element={
+        <ProtectedRoute requiredRole="user">
+          <KontrolnaTablaStanaraStranica kvarApi={kvarAPI} />
+        </ProtectedRoute>} />
 
         <Route
-          path="/admin-dashboard"
+          path="/majstor-dashboard"
           element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRole="majstor">
               <KontrolnaTablaAdminStranica usersApi={usersApi} /> 
             </ProtectedRoute>
           }

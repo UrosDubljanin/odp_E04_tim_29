@@ -18,6 +18,18 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
   const podnesiFormu = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!ime.trim()) {
+      setGreska("Ime je obavezno.");
+      return;
+    }
+
+    if (!prezime.trim()) {
+      setGreska("Ime je obavezno.");
+      return;
+    }
+
+
+
     const validacija = validacijaPodatakaAuth(korisnickoIme, lozinka);
     if (!validacija.uspesno) {
       setGreska(validacija.poruka ?? "Neispravni podaci");
@@ -98,8 +110,8 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
           onChange={(e) => setUloga(e.target.value)}
           className="w-full bg-green-200/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
-          <option value="Stanar">Stanar</option>
-          <option value="Majstor">Majstor</option>
+          <option value="stanar">Stanar</option>
+          <option value="majstor">Majstor</option>
         </select>
         {greska && (
           <p className="text-md text-center text-red-700/80 font-medium">
