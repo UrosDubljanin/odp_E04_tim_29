@@ -1,71 +1,29 @@
-import axios from "axios";
-import type { Kvar } from "../../models/kvar/Kvar";
+import type { KvarDto } from "../../models/kvar/KvarDto";
+import type { ApiResponse } from "../../types/API/ApiResponse";
 import type { IKvarAPIService } from "./IKvarAPIService";
 
 
+const RAW_API = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api/v1";
+const API_BASE = RAW_API.endsWith("/") ? RAW_API : RAW_API + "/";
+const API_URL: string = API_BASE + "reports";
 
-const API_URL: string = import.meta.env.VITE_API_URL + "kvar";
-
-
-function authHeader(token: string) {
-    return { Authorization: `Bearer ${token}` };
-}
-
-function normalizeToArray<T>(x: T | T[] | undefined | null): T[] {
-    if (!x) return [];
-    return Array.isArray(x) ? x : [x];
-}
-
-type ApiEnvelope<T> = { success: boolean; message?: string; data?: T };
-
-export const kvarAPI : IKvarAPIService ={
-    getMojeKvarove: async function (token: string, userId: number): Promise<Kvar[]> {
-        const res = await axios.get(`${API_URL}/user/${userId}`, { headers: authHeader(token) });
-        if (!res.data.success) throw new Error(res.data.message || "Greška pri učitavanju kvarova.");
-        return normalizeToArray(res.data.data);
+export const KvarApi: IKvarAPIService = {
+    getSviKvarovi: function (status?: string, sortBy?: string, order?: "ASC" | "DESC"): Promise<ApiResponse<KvarDto[]>> {
+        throw new Error("Function not implemented.");
     },
-    getAllKvar: async function (token: string): Promise<Kvar[]> {
-        const res = await axios.get<ApiEnvelope<Kvar | Kvar[]>>(`${API_URL}`, { headers: authHeader(token) });
-        if (!res.data.success) throw new Error(res.data.message || "Greška pri učitavanju kvarova.");
-        return normalizeToArray(res.data.data);
+    getKvaroveKorisnika: function (status?: string, sortBy?: string, order?: "ASC" | "DESC"): Promise<ApiResponse<KvarDto[]>> {
+        throw new Error("Function not implemented.");
     },
-    getKvarByStatus: async function (token: string, status: string): Promise<Kvar[]> {
-        const url = `${API_URL}/status/${encodeURIComponent(status)}`;
-        const res = await axios.get<ApiEnvelope<Kvar | Kvar[]>>(url, { headers: authHeader(token) });
-        if (!res.data.success) throw new Error(res.data.message || "Greška pri filtriranju kvarova.");
-        return normalizeToArray(res.data.data);
+    kreirajKvar: function (naslov: string | null, opis: string, adresa: string, slika?: string | null | FormData): Promise<ApiResponse<KvarDto>> {
+        throw new Error("Function not implemented.");
     },
-    createKvar: async function (token: string, kvar: Partial<Kvar>): Promise<Kvar> {
-        const res = await axios.post<ApiEnvelope<Kvar>>(
-            `${API_URL}`,
-            kvar,
-            { headers: { ...authHeader(token), "Content-Type": "application/json" } }
-        );
-        if (!res.data.success || !res.data.data) {
-            throw new Error(res.data.message || "Greška pri kreiranju kvara.");
-        }
-        return res.data.data;
+    getPrijavaById: function (id: number): Promise<ApiResponse<KvarDto>> {
+        throw new Error("Function not implemented.");
     },
-    updateKvarStatus: async function (token: string, id: number, status: string): Promise<Kvar> {
-        const res = await axios.put<ApiEnvelope<Kvar>>(
-            `${API_URL}/${id}/status`,
-            { status },
-            { headers: { ...authHeader(token), "Content-Type": "application/json" } }
-        );
-        if (!res.data.success || !res.data.data) {
-            throw new Error(res.data.message || "Greška pri izmeni statusa.");
-        }
-        return res.data.data;
+    prihvatiKvar: function (id: number): Promise<ApiResponse<null>> {
+        throw new Error("Function not implemented.");
     },
-    resolveKvar: async function (token: string, id: number, payload: { status: string; comment: string; price: number; }): Promise<Kvar> {
-        const res = await axios.put<ApiEnvelope<Kvar>>(
-            `${API_URL}/${id}/resolve`,
-            payload,
-            { headers: { ...authHeader(token), "Content-Type": "application/json" } }
-        );
-        if (!res.data.success || !res.data.data) {
-            throw new Error(res.data.message || "Greška pri zaključivanju kvara.");
-        }
-        return res.data.data;
+    zavrsiKvar: function (id: number, saniran: boolean, comment?: string, cena?: number): Promise<ApiResponse<null>> {
+        throw new Error("Function not implemented.");
     }
 }

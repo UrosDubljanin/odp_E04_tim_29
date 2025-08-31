@@ -1,0 +1,1 @@
+export type statusGreske='Kreiran' | 'Popravka u toku' | 'Saniran' | 'Problem nije rešen';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { IKvarAPIService } from "../../../api_services/kvarovi/IKvarAPIService";
-import type { Kvar } from "../../../models/kvar/Kvar";
+import type { Kvar } from "../../../models/kvar/KvarDto";
 
 type Props = {
     kvarApi: IKvarAPIService;
@@ -50,7 +50,7 @@ export function DodajKvar({ kvarApi, token, korisnikovId, onCreated, onCancel }:
 
         try {
             setSubmitting(true);
-            const created = await kvarApi.createKvar(token, {
+            const created = await kvarApi.kreirajKvar(token, {
                 korisnikovId,
                 naziv: naziv.trim(),
                 opis: opis.trim(),
