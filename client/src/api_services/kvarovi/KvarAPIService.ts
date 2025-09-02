@@ -1,29 +1,98 @@
+import axios from "axios";
+import { PročitajVrednostPoKljuču } from "../../helpers/local_storage";
 import type { KvarDto } from "../../models/kvar/KvarDto";
 import type { ApiResponse } from "../../types/API/ApiResponse";
 import type { IKvarAPIService } from "./IKvarAPIService";
+import type { QueryParams } from "../../types/pomocne/QueryParms";
+import type { CreateReportPayload } from "../../types/kvarovi/CreateReportPayload";
 
 
 const RAW_API = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api/v1";
 const API_BASE = RAW_API.endsWith("/") ? RAW_API : RAW_API + "/";
-const API_URL: string = API_BASE + "reports";
+const API_URL: string = API_BASE + "kvarovi";
 
 export const KvarApi: IKvarAPIService = {
-    getSviKvarovi: function (status?: string, sortBy?: string, order?: "ASC" | "DESC"): Promise<ApiResponse<KvarDto[]>> {
-        throw new Error("Function not implemented.");
+    getSviKvarovi: async function (params?: QueryParams): Promise<ApiResponse<KvarDto[]>> {
+        try {
+            const token = PročitajVrednostPoKljuču("authToken");
+
+            const res = await axios.get<ApiResponse<KvarDto[]>>(`${API_URL}/all`, {
+                params,
+                headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+            });
+            return res.data;
+        } catch (error) {
+            let message = "Greska prilikom preuzimanja kvarova.";
+            if (axios.isAxiosError(error)) {
+                message = error.response?.data?.message || message;
+            }
+            return { success: false, message, data: [] };
+        }
     },
-    getKvaroveKorisnika: function (status?: string, sortBy?: string, order?: "ASC" | "DESC"): Promise<ApiResponse<KvarDto[]>> {
-        throw new Error("Function not implemented.");
+    getKvaroveKorisnika: async function (params?: QueryParams): Promise<KvarDto[]> {
+        try {
+            const token = PročitajVrednostPoKljuču("authToken");
+
+            const res = await axios.get<KvarDto[]>(`${API_URL}`, {
+                params,
+                headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+            });
+            return res.data;
+        } catch (error) {
+            let message = "Greska prilikom preuzimanja vasih kvarova.";
+            if (axios.isAxiosError(error)) {
+                message = error.response?.data?.message || message;
+            }
+            return [];
+        }
     },
-    kreirajKvar: function (naslov: string | null, opis: string, adresa: string, slika?: string | null | FormData): Promise<ApiResponse<KvarDto>> {
-        throw new Error("Function not implemented.");
+
+    kreirajKvar: async function (payload: CreateReportPayload | FormData): Promise<ApiResponse<KvarDto>> {
+        try {
+            const token = PročitajVrednostPoKljuču("authToken");
+            const res = await axios.post<ApiResponse<KvarDto>>(`${API_URL}`, payload, {
+                headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+            });
+            return res.data;
+        } catch (error) {
+            let message = "Greska pri kreiranju kvara.";
+            if (axios.isAxiosError(error)) {
+                message = error.response?.data?.message || message;
+            }
+            return { success: false, message };
+        }
     },
-    getPrijavaById: function (id: number): Promise<ApiResponse<KvarDto>> {
-        throw new Error("Function not implemented.");
+    getKvarById: async function (id: number): Promise<ApiResponse<KvarDto>> {
+        try {
+            const token = PročitajVrednostPoKljuču("authToken");
+            const res = await axios.get<ApiResponse<KvarDto>>(`${API_URL}/${id}`, {
+                headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+            });
+            return res.data;
+        } catch (error) {
+            let message = "Greska pri preuzimanju kvara.";
+            if (axios.isAxiosError(error)) {
+                message = error.response?.data?.message || message;
+            }
+            return { success: false, message };
+        }
     },
-    prihvatiKvar: function (id: number): Promise<ApiResponse<null>> {
-        throw new Error("Function not implemented.");
+    prihvatiKvar: async function (id: number): Promise<ApiResponse<null>> {
+        try {
+            const token = PročitajVrednostPoKljuču("authToken");
+            const res = await axios.put<ApiResponse<null>>(`${API_URL}/${id}/accept`, null, {
+                headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+            });
+            return res.data;
+        } catch (error) {
+            let message = "Greska pri prihvatanju kvara.";
+            if (axios.isAxiosError(error)) {
+                message = error.response?.data?.message || message;
+            }
+            return { success: false, message };
+        }
     },
     zavrsiKvar: function (id: number, saniran: boolean, comment?: string, cena?: number): Promise<ApiResponse<null>> {
         throw new Error("Function not implemented.");
-    }
+    },
 }

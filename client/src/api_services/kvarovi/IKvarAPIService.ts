@@ -1,17 +1,18 @@
 
 import type { KvarDto } from "../../models/kvar/KvarDto";
 import type { ApiResponse } from "../../types/API/ApiResponse";
+import type { CreateReportPayload } from "../../types/kvarovi/CreateReportPayload";
+import type { QueryParams } from "../../types/pomocne/QueryParms";
 
 export interface IKvarAPIService {
-  getSviKvarovi(status?: string, sortBy?: string, order?: "ASC" | "DESC"): Promise<ApiResponse<KvarDto[]>>;
+  getSviKvarovi(params?: QueryParams): Promise<ApiResponse<KvarDto[]>>;
 
   
-  getKvaroveKorisnika(status?: string, sortBy?: string, order?: "ASC" | "DESC"): Promise<ApiResponse<KvarDto[]>>;
-
+  getKvaroveKorisnika(params?: QueryParams): Promise<KvarDto[]>;
  
-  kreirajKvar(naslov: string | null, opis: string, adresa: string, slika?: string | null | FormData): Promise<ApiResponse<KvarDto>>;
+  kreirajKvar(payload: CreateReportPayload | FormData): Promise<ApiResponse<KvarDto>>;
 
-  getPrijavaById(id: number): Promise<ApiResponse<KvarDto>>;
+  getKvarById(id: number): Promise<ApiResponse<KvarDto>>;
 
   prihvatiKvar(id: number): Promise<ApiResponse<null>>;
 

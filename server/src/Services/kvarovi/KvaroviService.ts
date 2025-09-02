@@ -14,7 +14,7 @@ export class KvaroviService implements IKvaroviService {
         ));
     }
     async getKvaroveKorisnika(userId: number, status?: string | null, sortBy?: "createdAt" | "cena", order?: "ASC" | "DESC"): Promise<KvarDto[]> {
-        const reports = await this.repo.getByUser(userId, status, sortBy, order);
+        const reports = await this.repo.getByUser(userId);
         return reports.map(r => new KvarDto(
             r.id, r.korisnikovId, r.naziv, r.opis, r.imageUrl, r.stanBr, r.status, r.datum, r.cena, r.komentar, r.reakcija
         ));

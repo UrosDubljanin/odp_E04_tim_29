@@ -1,150 +1,140 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { IKvarAPIService } from "../../../api_services/kvarovi/IKvarAPIService";
-import type { Kvar } from "../../../models/kvar/KvarDto";
+import { validacijaPrijaveKvaraClient } from "../../../api_services/validators/kvarovi/reportValidator";
 
-type Props = {
-    kvarApi: IKvarAPIService;
-    token: string;
-    korisnikovId: number;
-    onCreated: (created: Kvar) => void;
-    onCancel: () => void;
-};
-
-const SLIKE = "/slikeKvarova/_index.json";
-
-
-export function DodajKvar({ kvarApi, token, korisnikovId, onCreated, onCancel }: Props) {
-    const [naziv, setNaziv] = useState("");
-    const [opis, setOpis] = useState("");
-    const [imageUrl, setImageUrl] = useState<string>("");
-    const [pickerOpen, setPickerOpen] = useState(false);
-    const [imageList, setImageList] = useState<string[]>([]);
-    const [imgLoading, setImgLoading] = useState(false);
-    const [imgError, setImgError] = useState<string | null>(null);
-
-    const [error, setError] = useState<string | null>(null);
-    const [submitting, setSubmitting] = useState(false);
-
-    useEffect(() => {
-        if (!pickerOpen) return;
-        setImgError(null);
-        setImgLoading(true);
-        fetch(SLIKE)
-            .then(r => {
-                if (!r.ok) throw new Error("Ne mogu da učitam listu slika.");
-                return r.json() as Promise<string[]>;
-            })
-            .then(list => setImageList(list))
-            .catch(err => setImgError(err.message || "Greška pri učitavanju slika."))
-            .finally(() => setImgLoading(false));
-    }, [pickerOpen]);
-
-    const submit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(null);
-
-        if (!naziv.trim() || !opis.trim()) {
-            setError("Naziv i opis su obavezni.");
-            return;
-        }
-
-        try {
-            setSubmitting(true);
-            const created = await kvarApi.kreirajKvar(token, {
-                korisnikovId,
-                naziv: naziv.trim(),
-                opis: opis.trim(),
-                imageUrl: imageUrl.trim() || undefined,
-            });
-            onCreated(created);
-        } catch (err: any) {
-            setError(err?.message || "Greška pri prijavi kvara.");
-        } finally {
-            setSubmitting(false);
-        }
-    };
-
-    return (
-        <div className="form-container">
-            <h1>Prijava novog kvara</h1>
-            <form onSubmit={submit}>
-                <div className="input-group">
-                    <input
-                        type="text"
-                        placeholder="Naziv kvara *"
-                        value={naziv}
-                        onChange={(e) => setNaziv(e.target.value)}
-                    />
-                </div>
-
-                <div className="input-group">
-                    <input
-                        type="text"
-                        placeholder="Opis kvara *"
-                        value={opis}
-                        onChange={(e) => setOpis(e.target.value)}
-                    />
-                </div>
-
-                <div className="input-group image-field">
-                    <input
-                        type="text"
-                        placeholder="default.jpg"
-                        value={imageUrl}
-                        readOnly
-                    />
-                    <button
-                        type="button"
-                        className="choose-btn"
-                        onClick={() => setPickerOpen(v => !v)}
-                        title="Odaberi sliku"
-                        aria-label="Odaberi sliku"
-                    >
-                        …
-                    </button>
-
-                    {imageUrl ? <img src={`/images/${imageUrl}`} alt="" /> : null}
-
-                    {pickerOpen && (
-                        <div className="image-picker">
-                            <div className="hd">
-                                <button type="button" onClick={() => setPickerOpen(false)}>Zatvori</button>
-                            </div>
-
-                            {imgLoading && <div>Učitavam…</div>}
-                            {imgError && <div style={{ color: "crimson" }}>{imgError}</div>}
-
-                            {!imgLoading && !imgError && (
-                                <div className="grid">
-                                    {imageList.map(file => (
-                                        <button
-                                            key={file}
-                                            type="button"
-                                            className={`thumb ${imageUrl === file ? "selected" : ""}`}
-                                            onClick={() => { setImageUrl(file); setPickerOpen(false); }}
-                                            title={file}
-                                        >
-                                            <img src={`/images/${file}`} alt={file} />
-                                            <span>{file}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-
-                {error && <p className="error">{error}</p>}
-
-                <div>
-                    <button type="submit" disabled={submitting}>
-                        {submitting ? "Slanje…" : "Sačuvaj"}
-                    </button>
-                    <button type="button" className="btn btn--danger" onClick={onCancel} disabled={submitting}>
-                        Otkaži
-                    </button>
-                </div>
-            </form>
-        </div>
-    );
+interface Props {
+  kvarApi: IKvarAPIService;
 }
+
+export function DodajKvar({ kvarApi }: Props) {
+  const navigate = useNavigate();
+
+  const [naziv, setNaziv] = useState("");
+  const [opis, setOpis] = useState("");
+  const [stanBr, setStanbr] = useState("");
+  const [greska, setGreska] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0] ?? null;
+    setFile(f);
+    if (f) setPreview(URL.createObjectURL(f));
+    else setPreview(null);
+  }
+
+  const podnesiFormu = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setGreska("");
+
+    const valid = validacijaPrijaveKvaraClient(naziv, opis, stanBr);
+    if (!valid.uspesno) {
+      setGreska(valid.poruka ?? "Neispravni podaci");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const form = new FormData();
+      form.append("naziv", naziv);
+      form.append("opis", opis);
+      form.append("stan", stanBr);
+      if (file) form.append("image", file);
+
+      const resp = await kvarApi.kreirajKvar(form);
+      if (!resp.success) {
+        setGreska(resp.message ?? "Greška pri kreiranju kvara");
+      } else {
+        setNaziv("");
+        setOpis("");
+        setStanbr("");
+        setFile(null);
+        if (preview) {
+          URL.revokeObjectURL(preview);
+          setPreview(null);
+        }
+        setGreska("");
+      }
+    } catch (err: any) {
+      setGreska(err?.message ?? "Server error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-gray-800">Prijavi kvara</h2>
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 bg-white/60 hover:bg-white/80 text-gray-800 px-3 py-1.5 rounded-xl border border-gray-200 shadow-sm transition"
+        >
+          Vrati na prethodnu
+        </button>
+      </div>
+
+      <form onSubmit={podnesiFormu} className="grid gap-4">
+        <input
+          value={naziv}
+          onChange={(e) => setNaziv(e.target.value)}
+          placeholder="Naziv kvara"
+          className="w-full px-4 py-2 rounded-xl border border-gray-300 bg-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+        <textarea
+          value={opis}
+          onChange={(e) => setOpis(e.target.value)}
+          placeholder="Detaljan opis kvara..."
+          className="w-full px-4 py-2 rounded-xl border border-gray-300 bg-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 h-28"
+        />
+        <input
+          value={stanBr}
+          onChange={(e) => setStanbr(e.target.value)}
+          placeholder="Broj stana"
+          className="w-full px-4 py-2 rounded-xl border border-gray-300 bg-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+
+        <div>
+          <label className="text-sm font-medium text-gray-700">Dodaj sliku (opciono)</label>
+          <input type="file" accept="image/*" onChange={onFileChange} className="mt-2" />
+          {preview && (
+            <div className="mt-3">
+              <img
+                src={preview}
+                alt="preview"
+                className="w-48 h-32 object-cover rounded-xl border"
+              />
+            </div>
+          )}
+        </div>
+
+        {greska && <p className="text-red-700/80 font-medium">{greska}</p>}
+
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            className=" btn-primary flex items-center justify-center gap-2px-5 py-2 rounded-xl bg-gradient-to-r from-[#D9BFA0] to-[#C77D57] text-white font-semibold shadow hover:brightness-105 transition disabled:opacity-70"
+            disabled={loading}
+          >
+
+            {loading ? "Slanje..." : " Pošalji"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/60 hover:bg-white/80 text-gray-800 border border-gray-200 shadow-sm transition"
+>
+          
+            Otkaži
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+export default DodajKvar;

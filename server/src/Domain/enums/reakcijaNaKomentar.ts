@@ -1,1 +1,1 @@
-export type reakcijeNaKomentar ='like' | 'dislike' | null;
+export type reakcijeNaKomentar ='like' | 'dislike' | 'neutral';

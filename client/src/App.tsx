@@ -9,9 +9,18 @@ import PrijavaStranica from "./pages/auth/PrijavaStranica";
 import RegistracijaStranica from "./pages/auth/RegistracijaStranica";
 import KontrolnaTablaAdminStranica from "./pages/kontrolna_tabla/KontrolnaTablaAdminStranica";
 import NotFoundStranica from "./pages/not_found/NotFoundPage";
+
+
+//stanarove stranice
+import StanarDashboard from "./pages/stanar/StanarDashboard";
+
+import DodajKvarPage from "./pages/stanar/DodajKvarPage";
+import ListaKvarovaPage from "./pages/stanar/ListaKvarovaPage";
+
+
 import { usersApi } from "./api_services/users/UsersAPIService";
-import { kvarAPI } from "./api_services/kvarovi/KvarAPIService";
-import KontrolnaTablaStanaraStranica from "./pages/kontrolna_tabla/KontrolnaTablaStanaraStranica";
+
+import { KvarApi } from "./api_services/kvarovi/KvarAPIService";
 
 function App() {
   return (
@@ -20,9 +29,9 @@ function App() {
       <Route path="/register" element={<RegistracijaStranica authApi={authApi} />} />
       <Route path="/404" element={<NotFoundStranica />} />
 
-        <Route path="/user-dashboard" element={
-        <ProtectedRoute requiredRole="user">
-          <KontrolnaTablaStanaraStranica kvarApi={kvarAPI} />
+        <Route path="/stanar-dashboard" element={
+        <ProtectedRoute requiredRole="stanar">
+          <StanarDashboard/>
         </ProtectedRoute>} />
 
         <Route
@@ -33,6 +42,27 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+        path="/lista-kvarova"
+        element={
+          <ProtectedRoute requiredRole="stanar">
+            <ListaKvarovaPage kvarApi={KvarApi} />
+          </ProtectedRoute>
+        }
+      />
+
+
+        <Route
+          path="/prijavi-kvar"
+          element={
+            <ProtectedRoute requiredRole="stanar">
+              <DodajKvarPage kvarApi={KvarApi} />
+            </ProtectedRoute>
+          }
+        />
+
+
 
         {/* Preusmerava na dashboard kao default rutu */}
         <Route path="/" element={<Navigate to="/login" replace />} />
