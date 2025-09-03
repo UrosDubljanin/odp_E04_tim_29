@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { UserRole } from "../../Domain/types/UserRole";
 
 interface JwtPayload {
   id: number;
   korisnickoIme: string;
-  uloga: string;
+  uloga: UserRole;
 }
 
 declare global {
@@ -35,7 +36,7 @@ export const authenticate = (
       process.env.JWT_SECRET ?? ""
     ) as JwtPayload;
 
-    req.user = decoded; // postavlja korisnika na req
+    req.user = decoded; 
     next();
   } catch (err) {
     res.status(401).json({ success: false, message: "Nevažeći token" });

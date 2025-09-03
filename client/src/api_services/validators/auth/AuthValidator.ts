@@ -2,11 +2,11 @@ import type { RezultatValidacije } from "../../../types/validation/ValidationRes
 
 export function validacijaPodatakaAuth(korisnickoIme?: string, lozinka?: string): RezultatValidacije {
   if (!korisnickoIme || !lozinka) {
-    return { uspesno: false, poruka: 'Korisnicko ime i lozinka su obavezni.' };
+    return { uspesno: false, poruka: 'Korisničko ime i lozinka su obavezni.' };
   }
 
   if (korisnickoIme.length < 3) {
-    return { uspesno: false, poruka: 'Korisnicko ime mora imati najmanje 3 karaktera.' };
+    return { uspesno: false, poruka: 'Korisničko ime mora imati najmanje 3 karaktera.' };
   }
 
   if (lozinka.length < 6) {
@@ -14,7 +14,7 @@ export function validacijaPodatakaAuth(korisnickoIme?: string, lozinka?: string)
   }
 
   if (lozinka.length > 20) {
-    return { uspesno: false, poruka: 'Lozinka moze imati najvise 20 karaktera.' };
+    return { uspesno: false, poruka: 'Lozinka može imati najviše 20 karaktera.' };
   }
 
   return { uspesno: true };

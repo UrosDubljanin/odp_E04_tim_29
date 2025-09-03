@@ -3,6 +3,7 @@ import { User } from "../../Domain/models/User";
 import { IUserRepository } from "../../Domain/repositories/users/IUserRepository";
 import { IAuthService } from "../../Domain/services/auth/IAuthService";
 import bcrypt from "bcryptjs";
+import { UserRole } from "../../Domain/types/UserRole";
 
 export class AuthService implements IAuthService {
   private readonly saltRounds: number = parseInt(process.env.SALT_ROUNDS || "10", 10);
@@ -16,27 +17,27 @@ export class AuthService implements IAuthService {
       return new UserAuthDataDto(user.id, user.korisnickoIme, user.uloga);
     }
 
-    return new UserAuthDataDto(); // Neispravno korisničko ime ili lozinka
+    return new UserAuthDataDto(); 
   }
 
-  async registracija(korisnickoIme: string, uloga: string, lozinka: string, ime: string, prezime: string, godine: number): Promise<UserAuthDataDto> {
+  async registracija(korisnickoIme: string, lozinka: string,  uloga: UserRole, imePrezime:string, datum:string): Promise<UserAuthDataDto> {
     const existingUser = await this.userRepository.getByUsername(korisnickoIme);
     
-    if (existingUser.id !== 0) {
-      return new UserAuthDataDto(); // Korisnik već postoji
+    if (existingUser && existingUser.id!==0) {
+      return new UserAuthDataDto(); 
     }
 
-    // Hash-ujemo lozinku pre čuvanja
+ 
     const hashedPassword = await bcrypt.hash(lozinka, this.saltRounds);
 
     const newUser = await this.userRepository.create(
-      new User(0, korisnickoIme, uloga, hashedPassword, ime, prezime, godine)
+      new User(0, korisnickoIme, hashedPassword, uloga,imePrezime,datum)
     );
 
     if (newUser.id !== 0) {
-      return new UserAuthDataDto(newUser.id, newUser.korisnickoIme, newUser.uloga);
+      return new UserAuthDataDto(newUser.id, newUser.korisnickoIme, newUser.uloga,newUser.imePrezime,newUser.datum);
     }
 
-    return new UserAuthDataDto(); // Registracija nije uspela
+    return new UserAuthDataDto(); 
   }
 }

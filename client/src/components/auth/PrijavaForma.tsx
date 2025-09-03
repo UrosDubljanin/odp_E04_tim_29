@@ -30,35 +30,35 @@ export function PrijavaForma({ authApi }: AuthFormProps) {
   };
 
   return (
-    <div className="bg-green-100/30 backdrop-blur-lg shadow-md rounded-2xl p-10 w-full max-w-md border border-blue-400">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Prijava</h1>
-      <form onSubmit={podnesiFormu} className="space-y-4">
+    <div className="w-full max-w-md p-10 bg-white/40 backdrop-blur-lg rounded-2xl shadow-lg border border-green-300 flex flex-col items-center space-y-6">
+      <h1 className="text-3xl font-bold text-green-700/80">Prijava na Kvaromat</h1>
+      <form onSubmit={podnesiFormu} className="w-full space-y-4">
         <input
           type="text"
-          placeholder="Korisnicko ime"
+          placeholder="Korisničko ime"
           value={korisnickoIme}
           onChange={(e) => setKorisnickoIme(e.target.value)}
-          className="w-full bg-green-200/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full px-4 py-2 rounded-xl border border-green-200 bg-white/60 focus:outline-none focus:ring-2 focus:ring-green-400"
         />
         <input
           type="password"
           placeholder="Lozinka"
           value={lozinka}
           onChange={(e) => setLozinka(e.target.value)}
-          className="w-full bg-green-200/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full px-4 py-2 rounded-xl border border-green-200 bg-white/60 focus:outline-none focus:ring-2 focus:ring-green-400"
         />
-        {greska && <p className="text-md text-center text-red-700/80 font-medium">{greska}</p>}
+        {greska && <p className="text-red-700/80 text-center font-medium">{greska}</p>}
         <button
           type="submit"
-          className="w-full bg-green-700/70 hover:bg-blue-700/90 text-white py-2 rounded-xl transition"
+          className="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-400 to-green-600 text-white font-semibold shadow hover:brightness-105 transition"
         >
           Prijavi se
         </button>
       </form>
-      <p className="text-center text-sm mt-4">
+      <p className="text-sm text-center text-green-700/80">
         Nemate nalog?{" "}
-        <Link to="/register" className="text-blue-700 hover:underline">
-          Registuj se
+        <Link to="/register" className="text-green-800 font-medium hover:underline">
+          Registrujte se
         </Link>
       </p>
     </div>

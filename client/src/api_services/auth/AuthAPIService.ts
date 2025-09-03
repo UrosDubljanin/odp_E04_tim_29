@@ -1,8 +1,10 @@
 import type { AuthResponse } from "../../types/auth/AuthResponse";
 import type { IAuthAPIService } from "./IAuthAPIService";
+import type { UserRole } from "../../types/users/UserRole";
 import axios from "axios";
 
-const API_URL: string = import.meta.env.VITE_API_URL + "auth";
+const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/g, ""); 
+const API_URL: string = `${BASE}/auth`;
 
 export const authApi: IAuthAPIService = {
   async prijava(korisnickoIme: string, lozinka: string): Promise<AuthResponse> {
@@ -13,7 +15,7 @@ export const authApi: IAuthAPIService = {
       });
       return res.data;
     } catch (error) {
-      let message = "Greska prilikom prijave.";
+      let message = "Грешка приликом пријаве.";
       if (axios.isAxiosError(error)) {
         message = error.response?.data?.message || message;
       }
@@ -28,25 +30,23 @@ export const authApi: IAuthAPIService = {
   async registracija(
     korisnickoIme: string,
     lozinka: string,
-    uloga: string,
-    ime: string,
-    prezime: string,
-    godine: number
+    uloga: UserRole,
+    imePrezime :string,
+    datum:string
   ): Promise<AuthResponse> {
     try {
       const res = await axios.post<AuthResponse>(`${API_URL}/register`, {
         korisnickoIme,
         lozinka,
         uloga,
-        ime,
-        prezime,
-        godine
+        imePrezime,
+        datum
       });
       return res.data;
     } catch (error) {
       let message = "Greška prilikom registracije.";
       if (axios.isAxiosError(error)) {
-        message = error.response?.data?.message || message;
+        message = error.response?.data?.message || error.message || message;
       }
       return {
         success: false,

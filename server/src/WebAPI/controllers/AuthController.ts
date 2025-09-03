@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { IAuthService } from '../../Domain/services/auth/IAuthService';
-import { validacijaPodatakaAuth } from '../validators/auth/RegisterValidator';
+import { validacijaPodatakaAuth } from '../../WebApi/validators/RegistarValidator';
 import jwt from "jsonwebtoken";
 
 export class AuthController {
@@ -18,15 +18,11 @@ export class AuthController {
     this.router.post('/auth/register', this.registracija.bind(this));
   }
 
-  /**
-   * POST /api/v1/auth/login
-   * Prijava korisnika
-   */
+
   private async prijava(req: Request, res: Response): Promise<void> {
     try {
       const { korisnickoIme, lozinka } = req.body;
 
-      // Validacija input parametara
       const rezultat = validacijaPodatakaAuth(korisnickoIme, lozinka);
 
       if (!rezultat.uspesno) {
@@ -36,9 +32,8 @@ export class AuthController {
 
       const result = await this.authService.prijava(korisnickoIme, lozinka);
 
-      // Proveravamo da li je prijava uspešna
       if (result.id !== 0) {
-        // Kreiranje jwt tokena
+
         const token = jwt.sign(
           { 
             id: result.id, 
@@ -58,13 +53,10 @@ export class AuthController {
     }
   }
 
-  /**
-   * POST /api/v1/auth/register
-   * Registracija novog korisnika
-   */
+
   private async registracija(req: Request, res: Response): Promise<void> {
     try {
-      const { korisnickoIme, lozinka, uloga ,ime ,prezime ,godine } = req.body;
+      const { korisnickoIme, lozinka, uloga,imePrezime,datum } = req.body;
       const rezultat = validacijaPodatakaAuth(korisnickoIme, lozinka);
 
       if (!rezultat.uspesno) {
@@ -72,11 +64,11 @@ export class AuthController {
         return;
       }
 
-      const result = await this.authService.registracija(korisnickoIme, uloga, lozinka,ime,prezime,godine);
-      
-      // Proveravamo da li je registracija uspešna
+      const result = await this.authService.registracija(korisnickoIme, lozinka, uloga,imePrezime,datum);
+      console.log("DEBUG registracija result:", result);
+
       if (result.id !== 0) {
-        // Kreiranje jwt tokena
+  
         const token = jwt.sign(
           { 
             id: result.id, 
@@ -87,16 +79,13 @@ export class AuthController {
 
         res.status(201).json({success: true, message: 'Uspešna registracija', data: token});
       } else {
-        res.status(401).json({success: false, message: 'Registracija nije usprela. Korisnicko ime vec postoji.', });
+        res.status(401).json({success: false, message: 'Регистрација није успела. Корисничко име већ постоји.', });
       }
     } catch (error) {
       res.status(500).json({success: false, message: error});
     }
   }
 
-  /**
-   * Getter za router
-   */
   public getRouter(): Router {
     return this.router;
   }
