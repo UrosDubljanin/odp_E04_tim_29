@@ -9,8 +9,8 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
   const [korisnickoIme, setKorisnickoIme] = useState("");
   const [lozinka, setLozinka] = useState("");
   const [uloga, setUloga] = useState<UserRole>("stanar");
-  const [imePrezime,setImePrezime]=useState("");
-  const [datum,setDatum]=useState(Date().toString());
+  const [imePrezime, setImePrezime] = useState("");
+  const [datum, setDatum] = useState(Date().toString());
   const [greska, setGreska] = useState("");
   const { login } = useAuth();
 
@@ -22,10 +22,34 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
       setGreska(validacija.poruka ?? "Neispravni podaci");
       return;
     }
+    function proveriGodine(): boolean {
+      if (!datum) return false;
 
+      const danas = new Date();
+      const rodjenje = new Date(datum);
+
+      let godine = danas.getFullYear() - rodjenje.getFullYear();
+      const mesecRazlika = danas.getMonth() - rodjenje.getMonth();
+
+      if (mesecRazlika < 0 || (mesecRazlika === 0 && danas.getDate() < rodjenje.getDate())) {
+        godine--;
+      }
+
+      if (godine >= 18) {
+        return true;
+      } else {
+        setGreska("❌ Korisnik mora imati najmanje 18 godina.");
+        return false;
+      }
+    }
+
+    if (!proveriGodine()) {
+      return;
+    }
 
 
     const odgovor = await authApi.registracija(korisnickoIme, lozinka, uloga, imePrezime, datum);
+
     if (odgovor.success && odgovor.data) {
       login(odgovor.data);
     } else {
@@ -34,6 +58,7 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
       setLozinka("");
       setImePrezime("");
     }
+
   };
 
   return (
