@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Folder, Plus } from "lucide-react";
+import {  Plus } from "lucide-react";
 import ReportFilterSortPanel from "../../components/reports/ReportFilterSortPanel";
 import { reportsApi } from "../../api_services/reports/ReportAPIService";
 
@@ -35,18 +35,20 @@ export default function MojePrijavePage() {
   return (
     <main
       className="min-h-screen py-10"
-      style={{ background: "linear-gradient(180deg, #FFF8F3 0%, #F7ECE2 100%)" }}
+      style={{
+        background: "linear-gradient(180deg, #F6FFF9 0%, #E9FDF1 100%)",
+      }}
     >
       <div className="max-w-6xl mx-auto w-full px-4">
+        {/* Header */}
         <header className="w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
           <div>
             <motion.h1
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45 }}
-              className="text-3xl md:text-4xl font-serif font-bold text-[#5B4636] flex items-center gap-3"
+              className="text-3xl md:text-4xl font-serif font-bold text-green-900 flex items-center gap-3"
             >
-              <Folder className="text-[#A65B3B]" size={28} />
               Moje prijave
             </motion.h1>
           </div>
@@ -55,7 +57,7 @@ export default function MojePrijavePage() {
             <Link
               to="/prijavi-kvar"
               aria-label="Prijavi novi kvar"
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-[#D9BFA0] to-[#C77D57] text-white px-6 py-3 rounded-3xl shadow-lg transition-transform transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-green-400 to-green-600 text-white px-6 py-3 rounded-3xl shadow-lg transition-transform transform hover:-translate-y-0.5 hover:brightness-105"
             >
               <Plus size={18} />
               <span className="text-lg font-semibold">Prijavi novi kvar</span>
@@ -63,6 +65,7 @@ export default function MojePrijavePage() {
           </div>
         </header>
 
+        {/* Report list / filter */}
         <main className="w-full">
           <ReportFilterSortPanel
             fetchFn={reportsApi.getPrijaveKorisnika}
@@ -72,6 +75,7 @@ export default function MojePrijavePage() {
         </main>
       </div>
 
+      {/* Toasts */}
       <div className="fixed top-6 right-6 z-50 w-[320px] pointer-events-none">
         <AnimatePresence initial={false}>
           {toasts.map((t) => (
@@ -85,35 +89,47 @@ export default function MojePrijavePage() {
             >
               <div
                 className={[
-                  "flex p-3 rounded-xl shadow-lg border",
-                  t.tone === "success" ? "bg-white border-green-200" : "",
-                  t.tone === "info" ? "bg-white border-blue-200" : "",
-                  t.tone === "warning" ? "bg-white border-yellow-200" : "",
-                  t.tone === "error" ? "bg-white border-red-200" : "",
+                  "flex p-3 rounded-xl shadow-lg border backdrop-blur-md",
+                  t.tone === "success" ? "bg-white/80 border-green-200" : "",
+                  t.tone === "info" ? "bg-white/80 border-blue-200" : "",
+                  t.tone === "warning" ? "bg-white/80 border-yellow-200" : "",
+                  t.tone === "error" ? "bg-white/80 border-red-200" : "",
                 ].join(" ")}
               >
                 <div className="flex-shrink-0 mr-3">
                   <div
                     className={[
-                      "w-10 h-10 rounded-full flex items-center justify-center text-white",
+                      "w-10 h-10 rounded-full flex items-center justify-center text-white shadow",
                       t.tone === "success" ? "bg-green-500" : "",
                       t.tone === "info" ? "bg-blue-500" : "",
                       t.tone === "warning" ? "bg-yellow-500" : "",
                       t.tone === "error" ? "bg-red-500" : "",
                     ].join(" ")}
                   >
-                    {t.tone === "success" ? "✅" : t.tone === "info" ? "ℹ️" : t.tone === "warning" ? "⚠️" : "❌"}
+                    {t.tone === "success"
+                      ? "✅"
+                      : t.tone === "info"
+                        ? "ℹ️"
+                        : t.tone === "warning"
+                          ? "⚠️"
+                          : "❌"}
                   </div>
                 </div>
 
                 <div className="flex-1">
-                  {t.title && <div className="text-sm font-semibold text-gray-800">{t.title}</div>}
+                  {t.title && (
+                    <div className="text-sm font-semibold text-gray-800">
+                      {t.title}
+                    </div>
+                  )}
                   <div className="text-sm text-gray-600">{t.message}</div>
                 </div>
 
                 <div className="ml-3 flex items-start">
                   <button
-                    onClick={() => setToasts((s) => s.filter((x) => x.id !== t.id))}
+                    onClick={() =>
+                      setToasts((s) => s.filter((x) => x.id !== t.id))
+                    }
                     className="text-gray-400 hover:text-gray-600 text-sm"
                     aria-label="close"
                   >

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import { useLogout } from "../../hooks/other/useLogoutHook";
 import { motion } from "framer-motion";
 import { LogOut, FileText, AlertCircle } from "lucide-react";
@@ -6,17 +6,18 @@ import { LogOut, FileText, AlertCircle } from "lucide-react";
 
 export default function StanarDashboard() {
   const logout = useLogout();
+  const navigator=useNavigate();
 
   return (
     <main className="page-wrapper flex flex-col min-h-screen bg-gradient-to-br from-green-50 via-green-100 to-green-200 items-center justify-center px-4">
       
       <header className="w-full flex justify-end py-4 px-6">
-        <Link
-          to="/info"
+        <button
+          onClick={() => navigator("/info")}
           className="flex items-center gap-4 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-xl shadow-md hover:brightness-110 transition"
         >
           Informacije o korisniku
-        </Link>
+        </button>
         <button
           onClick={logout}
           className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-xl shadow-md hover:brightness-110 transition"

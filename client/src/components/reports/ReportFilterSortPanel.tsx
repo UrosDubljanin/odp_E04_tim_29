@@ -61,11 +61,12 @@ export default function ReportFilterSortPanel({
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-6xl px-4 space-y-6">
+        {/* Back + Refresh */}
         <div className="flex items-center justify-between gap-4">
           <div>
             <button
               onClick={() => navigate("/stanar-dashboard")}
-              className="inline-flex items-center gap-2 bg-white/60 text-[#5B4636] px-3 py-2 rounded-xl"
+              className="inline-flex items-center gap-2 bg-white/70 hover:bg-white/90 text-green-800 px-3 py-2 rounded-xl shadow-sm transition"
             >
               ← Nazad
             </button>
@@ -75,11 +76,10 @@ export default function ReportFilterSortPanel({
               onClick={() => {
                 try {
                   localStorage.removeItem("reportReactions");
-                } catch (e) {
-                }
+                } catch (e) { }
                 fetchReports();
               }}
-              className="inline-flex items-center gap-2 bg-white px-3 py-2 rounded-xl shadow-sm"
+              className="inline-flex items-center gap-2 bg-white/80 hover:bg-white text-green-700 px-3 py-2 rounded-xl shadow-md transition"
             >
               <RefreshCw size={16} />
               Osveži
@@ -87,18 +87,20 @@ export default function ReportFilterSortPanel({
           </div>
         </div>
 
+        {/* Search bar */}
         <div className="w-full">
           <FilterBar onSearch={setSearch} />
         </div>
 
-        <div className="bg-[#F0E0CF] rounded-2xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        {/* Filter panel */}
+        <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 shadow-md flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div className="flex items-center gap-3 w-full md:w-1/2">
-            <Funnel size={18} className="text-[#A65B3B]" />
-            <span className="text-sm font-medium text-[#5B4636]">Filtriraj</span>
+            <Funnel size={18} className="text-green-600" />
+            <span className="text-sm font-medium text-green-900">Filtriraj</span>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="rounded-xl px-3 py-2 bg-white shadow-sm w-full md:w-auto"
+              className="rounded-xl px-3 py-2 bg-white shadow-sm border text-green-900 w-full md:w-auto"
             >
               <option value="">Svi statusi</option>
               <option value="Kreiran">Kreiran</option>
@@ -109,13 +111,13 @@ export default function ReportFilterSortPanel({
           </div>
 
           <div className="flex items-center gap-3 justify-end w-full md:w-1/2">
-            <SlidersHorizontal size={18} className="text-[#A65B3B]" />
-            <span className="text-sm font-medium text-[#5B4636]">Sortiraj po</span>
+            <SlidersHorizontal size={18} className="text-green-600" />
+            <span className="text-sm font-medium text-green-900">Sortiraj po</span>
 
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as "createdAt" | "cena")}
-              className="rounded-xl px-3 py-2 bg-white shadow-sm"
+              className="rounded-xl px-3 py-2 bg-white shadow-sm border text-green-900"
             >
               <option value="createdAt">Vremenu prijave</option>
               <option value="cena">Ceni</option>
@@ -123,7 +125,7 @@ export default function ReportFilterSortPanel({
 
             <button
               onClick={() => setOrder(order === "ASC" ? "DESC" : "ASC")}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border bg-white"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border bg-white shadow-sm hover:bg-gray-50 transition"
             >
               {order === "ASC" ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
               {order === "ASC" ? "Rastuće" : "Opadajuće"}
@@ -131,28 +133,39 @@ export default function ReportFilterSortPanel({
           </div>
         </div>
 
+        {/* Content */}
         <div>
           <AnimatePresence>
             {loading ? (
               <motion.div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 justify-center">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="p-4 rounded-2xl bg-white h-48 animate-pulse" />
+                  <div
+                    key={i}
+                    className="p-4 rounded-2xl bg-white/70 backdrop-blur-sm h-48 animate-pulse shadow-md"
+                  />
                 ))}
               </motion.div>
             ) : filtered.length === 0 ? (
-              <motion.div className="bg-white rounded-2xl p-10 text-center shadow max-w-xl mx-auto">
-                <h3 className="text-lg font-semibold text-[#5B4636] mb-2">Nema prijava</h3>
-                <p className="text-[#7A6A5B] mb-6">Promeni filtere ili prijavi novi kvar.</p>
+              <motion.div className="bg-white/80 backdrop-blur-md rounded-2xl p-10 text-center shadow max-w-xl mx-auto">
+                <h3 className="text-lg font-semibold text-green-900 mb-2">
+                  Nema prijava
+                </h3>
+                <p className="text-green-700 mb-6">
+                  Promeni filtere ili prijavi novi kvar.
+                </p>
                 <div className="flex items-center justify-center gap-3">
                   <button
-                    onClick={() => { setStatus(""); setSearch(""); }}
-                    className="px-4 py-2 rounded-2xl border bg-white hover:bg-gray-50"
+                    onClick={() => {
+                      setStatus("");
+                      setSearch("");
+                    }}
+                    className="px-4 py-2 rounded-2xl border bg-white hover:bg-gray-50 shadow-sm"
                   >
                     Poništi filtere
                   </button>
                   <button
                     onClick={() => navigate("/prijavi-kvar")}
-                    className="px-5 py-3 rounded-3xl bg-gradient-to-r from-[#D9BFA0] to-[#C77D57] text-white font-semibold shadow-lg"
+                    className="px-5 py-3 rounded-3xl bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold shadow-lg hover:brightness-105 transition"
                   >
                     Prijavi novi kvar
                   </button>

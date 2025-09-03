@@ -119,19 +119,24 @@ export function ReportCard({ report, highlighted = false, onReact }: Props) {
       layout
       whileHover={{ translateY: -8 }}
       className={
-        "bg-white rounded-2xl overflow-hidden border border-transparent shadow-sm transition-all " +
-        (highlighted ? "ring-4 ring-yellow-300 animate-pulse" : "")
+        "bg-white/70 backdrop-blur-lg rounded-2xl overflow-hidden border border-green-200 shadow-md transition-all " +
+        (highlighted ? "ring-4 ring-green-300 animate-pulse" : "")
       }
-      style={{ boxShadow: "var(--card-shadow)" }}
+      style={{ boxShadow: "0 6px 16px rgba(0,0,0,0.08)" }}
     >
+      {/* Slika */}
       <div
-        className="w-full h-44 bg-gray-100 overflow-hidden relative cursor-pointer"
+        className="w-full h-44 bg-green-50 overflow-hidden relative cursor-pointer"
         onClick={() => navigate(`/prijava/${report.id}`)}
       >
         {imageUrl ? (
-          <img src={imageUrl} alt={report.naslov || "prijava"} className="w-full h-full object-cover" />
+          <img
+            src={imageUrl}
+            alt={report.naslov || "prijava"}
+            className="w-full h-full object-cover"
+          />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-[#F0E0CF] text-[color:var(--muted)]">
+          <div className="w-full h-full flex items-center justify-center bg-green-100 text-gray-500">
             <span className="text-sm">📷 Nema slike</span>
           </div>
         )}
@@ -141,64 +146,79 @@ export function ReportCard({ report, highlighted = false, onReact }: Props) {
         </div>
       </div>
 
+      {/* Tekstualni deo */}
       <div className="p-4 flex flex-col gap-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="text-lg font-semibold text-[color:var(--text-900)] truncate" title={report.naslov}>
+            <h3
+              className="text-lg font-semibold text-gray-800 truncate"
+              title={report.naslov}
+            >
               {report.naslov || "Bez naslova"}
             </h3>
-            <p className="text-sm text-[color:var(--muted)] mt-1 line-clamp-3 whitespace-pre-line">
+            <p className="text-sm text-gray-600 mt-1 line-clamp-3 whitespace-pre-line">
               {report.opis}
             </p>
           </div>
 
           <div className="flex flex-col items-end gap-2">
-            <span className="text-xs text-[color:var(--muted)]">
-              {report.createdAt ? new Date(report.createdAt).toLocaleDateString() : ""}
+            <span className="text-xs text-gray-400">
+              {report.createdAt
+                ? new Date(report.createdAt).toLocaleDateString()
+                : ""}
             </span>
             <div className="flex items-center gap-2">
-              <DollarSign size={14} className="text-[color:var(--muted)]" />
-              <span className="text-sm font-medium text-[color:var(--text-900)]">
-                {report.cena !== undefined && report.cena !== null ? `${report.cena} din` : "Bez troška"}
+              <DollarSign size={14} className="text-gray-500" />
+              <span className="text-sm font-medium text-gray-800">
+                {report.cena !== undefined && report.cena !== null
+                  ? `${report.cena} din`
+                  : "Bez troška"}
               </span>
             </div>
           </div>
         </div>
 
         {report.status === "Saniran" && (
-          <div className="pt-2 border-t border-transparent">
-            <p className="text-sm text-[color:var(--text-900)]">
+          <div className="pt-2 border-t border-green-100">
+            <p className="text-sm text-gray-800">
               <span className="font-medium">💬 Komentar majstora: </span>
-              <span className="text-[color:var(--muted)]">{report.masterComment || "Nema komentara"}</span>
+              <span className="text-gray-600">
+                {report.masterComment || "Nema komentara"}
+              </span>
             </p>
           </div>
         )}
 
+        {/* Reakcije */}
         <div className="mt-2">
           {userReaction ? (
-
             <div className="flex items-center gap-3">
-              <div className="px-3 py-2 bg-gray-100 rounded-full text-sm font-medium flex items-center gap-2">
+              <div className="px-3 py-2 bg-green-100 rounded-full text-sm font-medium flex items-center gap-2">
                 <span className="text-lg">{iconFor(userReaction)}</span>
                 <span>{labelFor(userReaction)}</span>
               </div>
             </div>
           ) : (
-
             <div className="flex items-center gap-3">
-              <ReactionButtons onReact={(r) => handleReact(r as ReactionTip)} disabled={busy} />
+              <ReactionButtons
+                onReact={(r) => handleReact(r as ReactionTip)}
+                disabled={busy}
+              />
             </div>
           )}
 
           <div className="mt-3 flex items-center justify-between">
-            <div className="text-sm text-gray-700">
-            </div>
+            <div className="text-sm text-gray-700"></div>
             <div className="text-xs text-gray-400">#{report.id}</div>
           </div>
         </div>
 
-        {successMsg && <div className="text-sm text-green-600 mt-1">{successMsg}</div>}
-        {localError && <div className="text-sm text-red-600 mt-1">{localError}</div>}
+        {successMsg && (
+          <div className="text-sm text-green-600 mt-1">{successMsg}</div>
+        )}
+        {localError && (
+          <div className="text-sm text-red-600 mt-1">{localError}</div>
+        )}
       </div>
     </motion.article>
   );
