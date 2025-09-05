@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"; 
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { DollarSign, Pencil, CheckCircle } from "lucide-react";
@@ -51,7 +51,7 @@ export function MasterReportCard({
       layout
       whileHover={{ translateY: -8 }}
       className={`w-full bg-white rounded-2xl overflow-hidden border transition
-        ${isHighlighted ? "border-amber-400 ring-2 ring-amber-200" : "border-transparent"}`}
+        ${isHighlighted ? "border-green-400 ring-2 ring-green-200" : "border-transparent"}`}
       style={{ boxShadow: "var(--card-shadow)" }}
     >
       <div
@@ -61,7 +61,7 @@ export function MasterReportCard({
         {imageUrl ? (
           <img src={imageUrl} alt={report.naslov || "prijava"} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-[#F0E0CF] text-[color:var(--muted)]">
+          <div className="w-full h-full flex items-center justify-center bg-white/60 text-[color:var(--muted)]">
             <span className="text-sm">📷 Nema slike</span>
           </div>
         )}
@@ -100,7 +100,9 @@ export function MasterReportCard({
             <button
               onClick={handleAccept}
               disabled={loadingAccept}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-[#D9BFA0] to-[#C77D57] text-white text-sm font-semibold shadow hover:shadow-md transition disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl 
+                bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-semibold 
+                shadow hover:brightness-110 active:scale-95 transition disabled:opacity-60"
             >
               <CheckCircle size={16} />
               {loadingAccept ? "Prihvatanje..." : "Prihvati prijavu"}
@@ -108,9 +110,11 @@ export function MasterReportCard({
           ) : (
             <button
               onClick={() => navigate(`/majstor-dashboard/zavrsi-prijavu/${report.id}`)}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-2xl border border-[#D9BFA0] bg-white text-[color:var(--text-900)] text-sm font-medium shadow-sm hover:bg-[#FFF8F3] transition"
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-2xl 
+                border border-green-500 bg-white text-[color:var(--text-900)] text-sm font-medium 
+                shadow-sm hover:bg-white/80 transition"
             >
-              <Pencil size={16} className="text-[#5B4636]" />
+              <Pencil size={16} className="text-green-600" />
               Ažuriraj izveštaj
             </button>
           )}
@@ -121,3 +125,4 @@ export function MasterReportCard({
 }
 
 export default MasterReportCard;
+

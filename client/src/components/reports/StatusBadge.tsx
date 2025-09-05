@@ -3,18 +3,22 @@ interface Props {
 }
 
 export default function StatusBadge({ status }: Props) {
-  const mapping: Record<string, { text: string; classes: string }> = {
-    Kreiran: { text: "Otvoreno", classes: "bg-[#F6EDE6] text-[#8A4A31]" },
-    "Popravka u toku": { text: "U toku", classes: "bg-[#FFF3E8] text-[#C77D57]" },
-    Saniran: { text: "Sanirano", classes: "bg-[#E9F4EA] text-[#2F7A4B]" },
-    "Problem nije rešen": { text: "Problem", classes: "bg-[#FDEAEA] text-[#A63B3B]" },
+  const mapping: Record<string, { text: string; bg: string; textColor: string }> = {
+    Kreiran: { text: "Otvoreno", bg: "#E6F4EA", textColor: "#276749" },
+    "Popravka u toku": { text: "U toku", bg: "#D1F0D6", textColor: "#2F855A" },
+    Saniran: { text: "Sanirano", bg: "#C6EAD4", textColor: "#22543D" },
+    "Problem nije rešen": { text: "Problem", bg: "#F0FFF4", textColor: "#38A169" },
   };
 
-  const info = mapping[status || ""] ?? { text: status ?? "Nepoznat", classes: "bg-[#F5F1EE] text-[#5B4636]" };
+  const info = mapping[status || ""] ?? { text: status ?? "Nepoznat", bg: "#EDF7ED", textColor: "#1A202C" };
 
   return (
-    <span className={`text-sm md:text-base font-semibold px-4 py-1.5 rounded-full ${info.classes}`}>
+    <span
+      className="text-sm md:text-base font-semibold px-4 py-1.5 rounded-full"
+      style={{ backgroundColor: info.bg, color: info.textColor }}
+    >
       {info.text}
     </span>
   );
 }
+

@@ -1,10 +1,12 @@
-import { Reaction } from "../../models/Reaction";
+import type { Reaction } from "../../models/Reaction";
+import type { Reakcije } from "../../types/Reakcije";
 
-export interface IReactionRepository {
-  create(reaction: Reaction): Promise<Reaction>;
-  getById(id: number): Promise<Reaction>;
-  getAll(): Promise<Reaction[]>;
-  update(reaction: Reaction): Promise<Reaction>;
-  delete(id: number): Promise<boolean>;
-  exists(id: number): Promise<boolean>;
+export interface IReactonRepository {
+
+  getByReportAndUser(reportId: number, userId: number): Promise<Reaction | null>;
+  upsert(reportId: number, userId: number, reakcija: Reakcije): Promise<Reaction | null>;
+  getByReportIdsAndUser(reportIds: number[], userId: number): Promise<Reaction[]>;
+  countByReport(reportId: number): Promise<Record<string, number>>;
 }
+
+export type IReactionRepository = IReactonRepository;

@@ -5,15 +5,15 @@ import { IAuthService } from '../src/Domain/services/auth/IAuthService';
 import { AuthService } from './Services/auth/AuthService';
 import { IUserRepository } from './Domain/repositories/users/IUserRepository';
 import { UserRepository } from '../src/Database/repositories/UserRepository';
-import { AuthController } from '../src/WebApi/controllers/AuthController';
+import { AuthController } from '../src/WebAPI/controllers/AuthController';
 import { IUserService } from './Domain/services/users/IUserService';
 import { UserService } from './Services/users/UserService';
-import { UserController } from '../src/WebApi/controllers/UserController';
+import { UserController } from '../src/WebAPI/controllers/UserController';
 import { IReportRepository } from './Domain/repositories/reports/IReportRepository';
 import { ReportRepository } from './Database/repositories/ReportRepository';
 import { IReportService } from './Domain/services/reports/IReportService';
 import { ReportService } from './Services/reports/ReportService';
-import { ReportController } from "../src/WebApi/controllers/ReportController";
+import { ReportController } from "../src/WebAPI/controllers/ReportController";
 
 require('dotenv').config();
 

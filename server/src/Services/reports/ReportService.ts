@@ -3,7 +3,7 @@ import { Reaction } from "../../Domain/models/Reaction";
 import { ReportRepository } from "../../Database/repositories/ReportRepository";
 import { ReportDto } from "../../Domain/DTOs/reports/ReportDto";
 import { IReportService } from "../../Domain/services/reports/IReportService";
-import { validacijaPrijaveKvara } from "../../WebApi/validators/ReportValidator";
+import { validacijaPrijaveKvara } from "../../WebAPI/validators/ReportValidator";
 import { IReportRepository } from "../../Domain/repositories/reports/IReportRepository";
 import { ReactionRepository } from "../../Database/repositories/ReactionRepository";
 import { IReactionRepository } from "../../Domain/repositories/reactions/IReactonRepository";

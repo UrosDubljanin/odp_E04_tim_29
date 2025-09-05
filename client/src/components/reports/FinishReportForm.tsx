@@ -81,7 +81,7 @@ export function FinishReportForm({ reportsApi, reportId }: Props) {
 
   return (
     <form onSubmit={zavrsi} className="space-y-6">
-      <div className="bg-white rounded-2xl shadow-lg p-6 border border-[color:var(--nude-200)] space-y-4">
+      <div className="bg-green-50 rounded-2xl shadow-lg p-6 border border-green-200 space-y-4">
         {reportImage && (
           <img
             src={reportImage}
@@ -91,39 +91,39 @@ export function FinishReportForm({ reportsApi, reportId }: Props) {
         )}
 
         <div>
-          <h2 className="text-xl font-semibold text-[color:var(--text-900)] mb-1">{naslov}</h2>
-          <p className="text-[color:var(--muted)] whitespace-pre-line">{opis}</p>
+          <h2 className="text-xl font-semibold text-green-900 mb-1">{naslov}</h2>
+          <p className="text-green-700 whitespace-pre-line">{opis}</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-lg p-6 border border-[color:var(--nude-200)] space-y-4">
-        <h3 className="text-lg font-semibold text-[color:var(--text-900)]">Izveštaj majstora</h3>
+      <div className="bg-green-50 rounded-2xl shadow-lg p-6 border border-green-200 space-y-4">
+        <h3 className="text-lg font-semibold text-green-900">Izveštaj majstora</h3>
 
-        <label className="block text-sm text-[color:var(--text-900)] mb-1">Komentar</label>
+        <label className="block text-sm text-green-900 mb-1">Komentar</label>
         <textarea
           value={komentar}
           onChange={(e) => setKomentar(e.target.value)}
           rows={4}
-          className="w-full rounded-xl border p-3 shadow-sm focus:ring-2 focus:ring-[#C77D57]"
+          className="w-full rounded-xl border p-3 shadow-sm focus:ring-2 focus:ring-green-400 outline-none"
           placeholder="Opiši radove koje si uradio (obavezno)"
         />
 
-        <label className="block text-sm text-[color:var(--text-900)] mb-1">Cena (RSD)</label>
+        <label className="block text-sm text-green-900 mb-1">Cena (RSD)</label>
         <input
           type="number"
           value={cena}
           onChange={(e) => setCena(e.target.value === "" ? "" : Number(e.target.value))}
-          className="w-40 rounded-xl border p-3 shadow-sm focus:ring-2 focus:ring-[#C77D57]"
+          className="w-40 rounded-xl border p-3 shadow-sm focus:ring-2 focus:ring-green-400 outline-none"
           min={0}
           step="1"
           placeholder="npr. 1200"
         />
 
-        <label className="block text-sm text-[color:var(--text-900)] mb-1">Ishod</label>
+        <label className="block text-sm text-green-900 mb-1">Ishod</label>
         <select
           value={ishod ? "saniran" : "nerez"}
           onChange={(e) => setIshod(e.target.value === "saniran")}
-          className="w-full rounded-xl border p-3 shadow-sm focus:ring-2 focus:ring-[#C77D57]"
+          className="w-full rounded-xl border p-3 shadow-sm focus:ring-2 focus:ring-green-400 outline-none"
         >
           <option value="saniran">Saniran</option>
           <option value="nerez">Problem nije rešen</option>
@@ -134,7 +134,7 @@ export function FinishReportForm({ reportsApi, reportId }: Props) {
         <div className="flex items-center gap-3">
           <button
             type="submit"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#D9BFA0] to-[#C77D57] text-white font-semibold shadow hover:shadow-md transition disabled:opacity-60"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold shadow hover:brightness-105 disabled:opacity-60"
             disabled={loading}
           >
             <Save size={16} />
@@ -144,7 +144,7 @@ export function FinishReportForm({ reportsApi, reportId }: Props) {
           <button
             type="button"
             onClick={() => navigate("/majstor-dashboard/sve-prijave")}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-[#D9BFA0] bg-white text-[color:var(--text-900)] font-medium shadow-sm hover:bg-[#FFF8F3] transition"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl border border-green-400 bg-white text-green-900 font-medium shadow-sm hover:bg-green-100 transition"
             disabled={loading}
           >
             <X size={16} />
@@ -157,3 +157,4 @@ export function FinishReportForm({ reportsApi, reportId }: Props) {
 }
 
 export default FinishReportForm;
+

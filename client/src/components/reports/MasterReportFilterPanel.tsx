@@ -74,7 +74,7 @@ export function MasterReportFilterPanel({
         <div className="flex items-center gap-3">
           <button
             onClick={fetchReports}
-            className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
             disabled={loading}
           >
             {loading ? "Osvežavanje..." : "Osveži"}
@@ -100,3 +100,4 @@ export function MasterReportFilterPanel({
     </div>
   );
 }
+
